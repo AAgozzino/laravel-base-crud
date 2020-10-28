@@ -8,3 +8,9 @@
     <li>Pagine: {{$book->pages}}</li>
     <li>Data pubblicazione: {{$book->year}}</li>
 </ul>
+
+<form action="{{route("books.destroy", $book->id)}}" method="POST">
+    @method("DELETE")
+    @csrf
+    <input type="submit" value="Elimina">
+</form>
