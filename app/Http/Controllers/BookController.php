@@ -38,7 +38,23 @@ class BookController extends Controller
     {
         // dd($request->all());
         $data = $request->all();
+
+        // Validazione dei campi in arrivo dal form - array che contiene il controllo per ogni attributo
+        $request->validate([
+            'isbn' => "required|unique:books|max:13",
+            'title' => "required|max:30",
+            'author' => "required|max:50",
+            'genre' => "required|max:30",
+            'edition' => "required|max:50",
+            'pages' => "required|integer",
+            'image' => "required",
+            'year' => "required|date",
+
+        ]);
+        // Nuovo oggetto book dal model Book
         $book = new Book;
+
+        // Associo ad ogni colonna il dato che arriva dal form
         $book->title = $data['title'];
         $book->author = $data['author'];
         $book->pages = $data['pages'];
@@ -47,9 +63,12 @@ class BookController extends Controller
         $book->isbn = $data['isbn'];
         $book->genre = $data['genre'];
         $book->image = $data['image'];
+        
+        // Salvo nel database
         $book->save();
         
-        dd($book);
+        // return view del nuovo libro inserito
+        return redirect()->route('books.show', $book);
     }
 
     /**
@@ -60,7 +79,11 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        //
+        //Cerco l'id all'interno del db
+        $book = Book::find($id);
+
+        // Ritorno la view del singolo libro
+        return view("show", ["book" => $book]);
     }
 
     /**
